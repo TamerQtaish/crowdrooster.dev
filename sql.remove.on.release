@@ -1,0 +1,163 @@
+
+CREATE TABLE users
+(
+  `id` int(12) unsigned NOT NULL AUTO_INCREMENT ,
+  `email` varchar(60),
+  `password` varchar(60),
+  `first_name` varchar(30),
+  `last_name` varchar(30),
+  `signup_ip` varchar(30),
+  `last_ip` varchar(30),
+  `last_on` int(12) DEFAULT 0,
+  `phone` varchar(30),
+  `reset_token` varchar(30),
+  `user_type` tinyint(3) unsigned  DEFAULT 1,
+  `t_and_c` tinyint(3) unsigned DEFAULT 0,
+  `require_info` tinyint(3) unsigned DEFAULT 0,
+  `soft_deleted` tinyint(3) unsigned DEFAULT 0,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+CREATE INDEX email ON users (`email`);
+
+##########################################################################################################
+user_type:
+	1: Standard
+	2: Admin
+
+require_info:
+	1: Needs new password
+	2: Needs profile info
+
+##########################################################################################################
+
+CREATE TABLE access
+(
+  `id` int(12) unsigned NOT NULL AUTO_INCREMENT ,
+  `user_id` int(12) DEFAULT 0,
+  `object_id` int(12) DEFAULT 0,
+  `object_type` tinyint(3) DEFAULT 0,
+  `access_level` tinyint(3) DEFAULT 1,
+  `soft_deleted` tinyint(3) unsigned DEFAULT 0,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+CREATE INDEX user_id ON access (`user_id`);
+CREATE INDEX object_id ON access (`object_id`);
+
+##########################################################################################################
+object_type:
+	1: Company
+
+access_level:
+	1: Read Only
+	2: Read and Write
+	3: Read, Write and Admin
+##########################################################################################################
+
+CREATE TABLE social_links
+(
+  `id` int(12) unsigned NOT NULL AUTO_INCREMENT ,
+  `object_id` int(12) DEFAULT 0,
+  `object_type` tinyint(3) DEFAULT 1,
+  `link_type` tinyint(3) DEFAULT 0,
+  `social_link` varchar(250),
+  `soft_deleted` tinyint(3) unsigned DEFAULT 0,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+CREATE INDEX object_id ON social_links (`object_id`);
+
+##########################################################################################################
+object_type:
+	1: User
+	2: Company
+
+link_type:
+	1: Facebook
+	2: Twitter
+	3: LinkedIn
+	4: Google+
+	5: Pinterest
+	6: YouTube
+	==> etc
+
+##########################################################################################################
+
+CREATE TABLE media_files
+(
+  `id` int(12) unsigned NOT NULL AUTO_INCREMENT ,
+  `object_id` int(12) DEFAULT 0,
+  `object_type` tinyint(3) DEFAULT 1,
+  `media_type` tinyint(3) DEFAULT 1,
+  `usage_type` tinyint(3) DEFAULT 1,
+  `media_link` varchar(250),
+  `soft_deleted` tinyint(3) unsigned DEFAULT 0,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+CREATE INDEX object_id ON media_files (`object_id`);
+
+##########################################################################################################
+object_type:
+	1: User
+	2: Company
+
+media_type: (just examples)
+	1: jpg, jpeg
+	2: gif
+	3: wistia
+	==> etc
+
+usage_type: (just examples)
+	1: User profile picture
+	2: Company profile picture
+	3: Company background image
+	4: product small image
+	==> etc
+	4: product big image
+
+##########################################################################################################
+
+CREATE TABLE addresses
+(
+  `id` int(12) unsigned NOT NULL AUTO_INCREMENT ,
+  `object_id` int(12) DEFAULT 0,
+  `object_type` tinyint(3) DEFAULT 1,
+  `address_type` tinyint(3) DEFAULT 1,
+  `address1` varchar(60),
+  `address2` varchar(60),
+  `town` varchar(30),
+  `zip_post_code` varchar(10),
+  `region_code` varchar(10),
+  `country_code` varchar(10),
+  `soft_deleted` tinyint(3) unsigned DEFAULT 0,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+CREATE INDEX object_id ON addresses (`object_id`);
+
+##########################################################################################################
+object_type:
+	1: User
+	2: Company
+
+address_type:
+	1: Shipping address
+	2: Billing address
+
+##########################################################################################################
+
+
+
+

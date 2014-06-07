@@ -15,9 +15,27 @@ class HomeController extends BaseController {
 	|
 	*/
 
-	public function showWelcome()
+	public function index()
 	{
-		return View::make('hello');
+		return $view = View::make('index', array(
+					'title' => Lang::get('home.index.title')
+					))
+			->nest('viewBody', 'home.index', array());
+			
+		return $view;
 	}
+	
+	public function test()
+	{
+		return $view = View::make('index', array(
+					'title' => Lang::get('home.test.title')
+					))
+			->nest('viewBody', 'home.test', array());
+			
+		return $view;
+	}
+	
+	
+	
 
 }

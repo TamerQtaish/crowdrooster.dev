@@ -1,0 +1,437 @@
+<!-- Conversion Pixel - Admedo US Marketing Display Campaign: Retargeting - DO NOT MODIFY --><script type="text/javascript" src="http://pool.adizio.com/pixel?id=168&t=js"></script><!-- End of Conversion Pixel —>
+
+<!-- Logo and Top Nav -->
+<header id="header">
+
+	<div class="container">
+	
+		<!-- Logo -->
+		<div class="logo <?=($_SESSION['WLlogo'] == '/img/admedo_14.png') ? 'logo_admedo' : '';?> <?= $_SESSION['WLlogo'] == '/img/admedoLite.gif' ? 'logo_admedo logo_lite' : '' ?>">
+			<a href="<?php echo url('dashboard'); ?>">
+				<img src="<?php echo url($_SESSION['WLlogo']); ?>" data-responsive="<?php 
+				$info = pathinfo(url($_SESSION['WLlogo']));
+				$wlInfo = pathinfo($_SESSION['WLlogo']);
+				$file_name = $info['filename'];
+				$ext  = $info['extension'];
+				$responsiveName = $file_name . '_res.' . $ext;
+				$responsive_logo = str_replace($file_name . '.' . $ext, $responsiveName, url($_SESSION['WLlogo']));
+				$responsive_logo_server = $wlInfo['dirname'];
+				if(file_exists($_SERVER['DOCUMENT_ROOT'] .'/'. $responsive_logo_server .'/'. basename($responsive_logo))){
+					echo $responsive_logo .'|'. '1240';
+				}
+				?>">
+			</a>
+		</div>
+		<!-- Navigation -->
+		<button class="nav-button"><?= Lang::get('interface.words.navigation'); ?></button>
+		<nav id="main-menu">
+			<ul>
+				<!-- DASHBOARD -->
+				<li class="dashboard<?php echo ((Request::is('dashboard/*') OR Request::is('dashboard')) ? ' active' : ''); ?>">
+					<a href="<?php echo url('dashboard'); ?>" title="<?= Lang::get('interface.menu.dashboard'); ?>">
+						<?= Lang::get('interface.menu.dashboard'); ?>
+					</a>
+				</li>
+				
+				<!-- CAMPAIGNS -->
+				<li class="campaigns<?php echo ((Request::is('campaigns/*') OR Request::is('campaigns')) ? ' active' : ''); ?>">
+					<a href="<?php echo url('campaigns'); ?>" title="<?= Lang::get('interface.menu.campaigns'); ?>">
+						<?= Lang::get('interface.menu.campaigns'); ?>
+					</a>
+					
+					<?php if(Access::where('user_id', Auth::user()->id)->where('permissions', '>', 1)->count()): ?>
+						<ul>
+							<li>
+								<a href="javascript:openNewCampaignPage();"><?= Lang::get('interface.menu.new_campaign'); ?></a>
+							</li>
+						</ul>
+					<?php endif; ?>
+				</li>
+
+				<!-- REPORTS -->
+				<li class="reports<?php echo ((Request::is('reports/*') OR Request::is('reports')) ? ' active' : ''); ?>">
+					<a href="<?php echo url('reports'); ?>" title="<?= Lang::get('interface.menu.reports'); ?>">
+						<?= Lang::get('interface.menu.reports'); ?>
+					</a>
+				</li>
+				
+				<!-- MESSAGES -->
+				<li class="messages<?php echo ((Request::is('messages/*') OR Request::is('messages')) ? ' active' : ''); ?>">
+					<a href="<?php echo url('messages'); ?>" title="<?= Lang::get('interface.menu.messages'); ?>">
+						<?= Lang::get('interface.menu.messages'); ?>
+						<span class="badge badge-important <?= ($unread['messages'] == 0 ) ? 'hidden' : '' ?>">
+							<?php echo $unread['messages']; ?>
+						</span>
+					</a>
+				</li>
+				
+				<!-- ACCOUNT -->
+				<li class="account<?php  echo ((Request::is('profile') OR
+					Request::is('adbuilder') OR 
+					Request::is('adbuilder/*') OR 
+					Request::is('profile') OR
+					Request::is('profile/*') OR
+					Request::is('pixels') OR Request::is('pixels/*') OR
+					Request::is('payments') OR
+					Request::is('payments/*') OR
+					Request::is('advertisers') OR
+					Request::is('advertisers/*') OR
+					Request::is('agencies') OR
+					Request::is('agencies/*') OR
+					Request::is('users/*') OR 
+					Request::is('users')) ? ' active' : ''); ?>">
+					<a href="<?php echo url('profile'); ?>" class="dropdown-toggle" data-toggle="dropdown">
+						<?= Lang::get('interface.menu.account'); ?>
+					</a>
+
+					<ul>
+
+						<!-- My Ads -->
+						<li class="account <?= ((Request::is('adbuilder') OR Request::is('adbuilder/*')) ? ' active' : ''); ?>">
+							<a href="<?= url('adbuilder'); ?>">
+							<!--	<i class="icon-picture"></i>-->
+							<?= Lang::get('interface.menu.my_ads'); ?>
+							</a>
+						</li>
+						
+						<!-- My Pixels -->
+						<li class="account <?= ((Request::is('pixels') OR Request::is('pixels/*')) ? ' active' : ''); ?>">
+							<a href="<?= url('pixels'); ?>">
+							<!--	<i class="icon-picture"></i>-->
+							<?= Lang::get('interface.menu.my_pixels'); ?>
+							</a>
+						</li>
+
+						<!-- Payments -->
+						<li class="account <?= ((Request::is('payments') OR Request::is('payments/*')) ? ' active' : ''); ?>">
+							<a href="<?= url('payments'); ?>">
+								<!--<i class="icon-user"></i>-->
+								<?= Lang::get('interface.menu.payments'); ?>
+							</a>
+						</li>
+						<?php if(User::hasWhiteLabel(Auth::user()) && Access::where('user_id', Auth::user()->id)->where('white_label_id', '>', 0)->where('permissions', '>', 2)->count()): ?>
+							<li class="account <?= ((Request::is('white-label') OR Request::is('white-label/*')) ? ' active' : ''); ?>">
+								<a href="<?= url('white-label'); ?>">
+									<!--<i class="icon-user"></i>-->
+									White Label
+								</a>
+							</li>
+						<?php endif; ?>
+						<!-- Agency -->
+						<?php if(User::hasAgency(Auth::user())): ?>
+							<li class="account <?= ((Request::is('agencies') OR Request::is('agencies/*')) ? ' active' : ''); ?>">
+								<a href="<?= url('agencies'); ?>">
+									<!--<i class="icon-user"></i>-->
+									Agencies
+								</a>
+							</li>
+							
+								<!-- Users -->
+								<li class="account <?= ((Request::is('users') OR Request::is('users/*')) ? ' active' : ''); ?>">
+									<a href="<?= url('users'); ?>">
+									<!--<i class="icon-user"></i>-->
+									Users
+									</a>
+								</li>
+						<?php endif; ?>
+
+						<!-- Advertisers -->
+						<?php if(User::hasAdvertisers(Auth::user())): ?>
+							<li class="account <?= ((Request::is('advertisers') OR Request::is('advertisers/*')) ? ' active' : ''); ?>">
+								<a href="<?= url('advertisers'); ?>">
+									<!--<i class="icon-user"></i>-->
+									Advertisers
+								</a>
+							</li>
+						<?php endif; ?>
+
+						<!-- Logout -->
+						<li class="account <?= ((Request::is('logout') OR Request::is('logout/*')) ? ' active' : ''); ?>">
+						<a href="<?= url('logout'); ?>">
+						<!--<i class="icon-share-alt"></i>-->
+						<?= Lang::get('interface.menu.logout'); ?>
+						</a>
+						</li>
+					</ul> <!-- Account SUBMENU -->
+				</li>
+
+				<?php
+					$agency = User::displayWhiteLabel(Auth::user()->id);
+					$can_see_management = false;
+					if(count($agency) && $agency[0]->white_label_id) {
+						$access = Access::where('user_id', Auth::user()->id)
+										  ->where('white_label_id', $agency[0]->white_label_id)->get();
+						if(isset($access[0])) {
+							if($access[0]->permissions == 3) {
+								$can_see_management = true;
+							}
+						}
+					}
+					if($can_see_management): ?>
+
+						
+						<li class="account <?= ((Request::is('reseller-reseller-admin/*')) ? ' active' : ''); ?>">
+						<a href="<?= url('reseller-admin/home'); ?>" style="min-width: 120px;"><?= "management" ?></a>
+
+						<ul class="reseller-admin-submenu">
+							<!-- Home -->
+							<li class="account <?= ((Request::is('reseller-admin/home')) ? ' active' : ''); ?>">
+								<a href="<?= url('reseller-admin/home'); ?>">
+								Home
+								</a>
+							</li>
+
+							<!-- Agencies -->
+							<li class="account <?= ((Request::is('reseller-admin/agencies') OR Request::is('reseller-admin/agencies/*')) ? ' active' : ''); ?>">
+								<a href="<?= url('reseller-admin/agencies'); ?>">
+								Agencies
+								</a>
+							</li>
+
+							<!-- Advertisers -->
+							<li class="account <?= ((Request::is('reseller-admin/advertisers') OR Request::is('reseller-admin/advertisers/*')) ? ' active' : ''); ?>">
+								<a href="<?= url('reseller-admin/advertisers'); ?>">
+								Advertisers
+								</a>
+							</li>
+
+							<!-- Campaigns -->
+							<li class="account <?= ((Request::is('reseller-admin/campaigns') OR Request::is('reseller-admin/campaigns/*')) ? ' active' : ''); ?>">
+								<a href="<?= url('reseller-admin/campaigns'); ?>">
+								Campaigns
+								</a>
+							</li>
+
+							<!-- Users -->
+							<li class="account <?= ((Request::is('reseller-admin/users') OR Request::is('reseller-admin/users/*') OR Request::is('reseller-admin/user-view/*')) ? ' active' : ''); ?>">
+								<a href="<?= url('reseller-admin/users'); ?>">
+								Users
+								</a>
+							</li>
+							
+							<!-- Pixels -->
+							<li class="account <?= ((Request::is('reseller-admin/pixels') OR Request::is('reseller-admin/pixels/*')) ? ' active' : ''); ?>">
+								<a href="<?= url('reseller-admin/pixels'); ?>">
+								Pixels
+								</a>
+							</li>
+							
+							<!-- Config -->
+							<li class="account <?= ((Request::is('reseller-admin/config') OR Request::is('reseller-admin/config/*')) ? ' active' : ''); ?>">
+								<a href="<?= url('reseller-admin/config'); ?>">
+								Config
+								</a>
+							</li>
+						</ul>
+					</li>
+
+
+				<?php endif; ?>
+				<?php
+				if (Auth::user()->type == 'Administrator') :
+				
+					$creativesWaiting = DB::select("select count(distinct(user_templates.user_set_id)) AS count
+								from `ad_builder`.`user_template_sets` join `ad_builder`.`user_templates` on
+								`user_templates`.`user_set_id` = `user_template_sets`.`user_set_id`
+								where `user_templates`.`status` = 'pending'
+								and user_template_sets.user_set_id IN (select distinct(user_template_set_id)
+								from live.ipon_campaign_creative Left join live.ipon_campaign on
+								(ipon_campaign_creative.campaign_id = ipon_campaign.id)
+								where (ipon_campaign.status='approved' OR ipon_campaign.status='waiting')
+								and ipon_campaign.soft_deleted=0) and user_template_sets.soft_deleted=0;");					
+					$creativesWaiting = $creativesWaiting[0]->count;
+
+
+					
+					$campaignsWaiting = IponCampaignGroup::select(DB::raw('status, count(distinct(campaign_group_id)), (pre_pay_amount + post_pay_amount + promotional_amount)'))
+								->Join('ipon_campaign', 'ipon_campaign_group.id', '=', 'ipon_campaign.campaign_group_id')
+								->whereRaw("(status = 'waiting' OR ((pre_pay_amount + post_pay_amount + promotional_amount) > 0 AND status= 'pending'))")
+								->where('ipon_campaign_group.soft_deleted', 0)
+								->where('ipon_campaign.soft_deleted', 0)->get();
+				?>				
+					<li class="account <?= ((Request::is('admin/*')) ? ' active' : ''); ?>">
+						<a href="<?= url('admin/home'); ?>" style="min-width: 120px;">
+							<?= "Admin" ?>
+							<span class="badge badge-important <?= (!isset($campaignsWaiting[0]->{'count(distinct(campaign_group_id))'}) && $campaignsWaiting[0]->{'count(distinct(campaign_group_id))'} == 0 ) ? 'hidden' : '' ?>">
+								<?= '<span class="extra">'.$creativesWaiting.'</span>' ?>
+								<?= $campaignsWaiting[0]->{'count(distinct(campaign_group_id))'} ?>
+							</span>
+						</a>
+
+						<ul class="admin-submenu">
+							<!-- Home -->
+							<li class="account <?= ((Request::is('admin/home') OR Request::is('admin/home/*')) ? ' active' : ''); ?>">
+								<a href="<?= url('admin/home'); ?>">
+								Home
+								</a>
+							</li>
+							<!-- WL -->
+							<li class="account <?= ((Request::is('admin/white-labels') OR Request::is('admin/white-labels/*')) ? ' active' : ''); ?>">
+								<a href="<?= url('admin/white-labels'); ?>">
+								White Labels
+								</a>
+							</li>
+							<!-- Agencies -->
+							<li class="account <?= ((Request::is('admin/agencies') OR Request::is('admin/agencies/*')) ? ' active' : ''); ?>">
+								<a href="<?= url('admin/agencies'); ?>">
+								Agencies
+								</a>
+							</li>
+
+							<!-- Advertisers -->
+							<li class="account <?= ((Request::is('admin/advertisers') OR Request::is('admin/advertisers/*')) ? ' active' : ''); ?>">
+								<a href="<?= url('admin/advertisers'); ?>">
+								Advertisers
+								</a>
+							</li>
+
+							<!-- Campaigns -->
+							<li class="account <?= ((Request::is('admin/campaigns') OR Request::is('admin/campaigns/*')) ? ' active' : ''); ?>">
+								<a href="<?= url('admin/campaigns'); ?>">
+								Campaigns
+								</a>
+							</li>
+
+							<!-- Creatives -->
+							<li class="account <?= ((Request::is('admin/creatives') OR Request::is('admin/creatives/*')) ? ' active' : ''); ?>">
+								<a href="<?= url('admin/creatives'); ?>">
+								Creatives
+								</a>
+							</li>
+
+							<!-- Users -->
+							<li class="account <?= ((Request::is('admin/users') OR Request::is('admin/users/*') OR Request::is('admin/user-view/*')) ? ' active' : ''); ?>">
+								<a href="<?= url('admin/users'); ?>">
+								Users
+								</a>
+							</li>
+							
+							<!-- Pixels -->
+							<li class="account <?= ((Request::is('admin/pixels') OR Request::is('admin/pixels/*')) ? ' active' : ''); ?>">
+								<a href="<?= url('admin/pixels'); ?>">
+								Pixels
+								</a>
+							</li>
+							
+							<!-- Reporting -->
+							<li class="account <?= ((Request::is('admin/reporting') OR Request::is('admin/reporting/*')) ? ' active' : ''); ?>">
+								<a href="<?= url('admin/reporting'); ?>">
+								Reporting
+								</a>
+							</li>
+							
+							<!-- Payments -->
+							<li class="account <?= ((Request::is('admin/payments') OR Request::is('admin/payments/*')) ? ' active' : ''); ?>">
+								<a href="<?= url('admin/payments'); ?>">
+								Payments
+								</a>
+							</li>
+						
+
+							<!-- Adbuilder -->
+							<li class="account <?= ((Request::is('admin/adbuilder') OR Request::is('admin/adbuilder/*')) ? ' active' : ''); ?>">
+								<a href="<?= url('admin/adbuilder/html5'); ?>">
+								Adbuilder
+								</a>
+							</li>
+
+							<!--LINE BREAK -->
+							<!-- <li class="linebreak"></li> -->
+
+							<li>
+								<span class="menu-item">Config</span>
+								<ul>
+									<!-- Emergency -->
+									<li class="account <?= ((Request::is('admin/emergency') OR Request::is('admin/emergency/*')) ? ' active' : ''); ?>">
+										<a href="<?= url('admin/emergency'); ?>">
+										Emergency
+										</a>
+									</li>
+
+									<!-- Languages -->
+									<li class="account <?= ((Request::is('admin/languages') OR Request::is('admin/languages/*')) ? ' active' : ''); ?>">
+										<a href="<?= url('admin/languages'); ?>">
+										Languages
+										</a>
+									</li>
+
+									<!-- Emails -->
+									<li class="account <?= ((Request::is('admin/emails') OR Request::is('admin/emails/*')) ? ' active' : ''); ?>">
+										<a href="<?= url('admin/emails'); ?>">
+										Emails
+										</a>
+									</li>
+
+									<!-- Currencies -->
+									<li class="account <?= ((Request::is('admin/currencies') OR Request::is('admin/currencies/*')) ? ' active' : ''); ?>">
+										<a href="<?= url('admin/currencies'); ?>">
+										Currencies
+										</a>
+									</li>
+
+									<!-- Exchanges -->
+									<li class="account <?= ((Request::is('admin/exchanges') OR Request::is('admin/exchanges/*') OR Request::is('admin/exchange/*')) ? ' active' : ''); ?>">
+										<a href="<?= url('admin/exchanges'); ?>">
+										Exchanges
+										</a>
+									</li>
+
+									<!-- subscriptions -->
+									<li class="account <?= ((Request::is('admin/subscriptions') OR Request::is('admin/subscriptions/*') OR Request::is('admin/subscriptions/*')) ? ' active' : ''); ?>">
+										<a href="<?= url('admin/subscriptions'); ?>">
+										subscriptions
+										</a>
+									</li>
+																	
+									<!-- Channels -->
+									<li class="account <?= ((Request::is('admin/channels') OR Request::is('admin/channels/*')) ? ' active' : ''); ?>">
+										<a href="<?= url('admin/channels'); ?>">
+										Channels
+										</a>
+									</li>
+
+									<!-- Campaigns Min -->
+									<li class="account <?= ((Request::is('admin/campaign_min') OR Request::is('admin/campaign_min/*')) ? ' active' : ''); ?>">
+										<a href="<?= url('admin/campaign_min'); ?>">
+										Campaigns Min
+										</a>
+									</li>
+
+									<!-- Geo Targeting -->
+									<li class="account <?= ((Request::is('admin/geotargeting') OR Request::is('admin/geotargeting/*')) ? ' active' : ''); ?>">
+										<a href="<?= url('admin/geotargeting'); ?>">
+										Geotargeting
+										</a>
+									</li>
+									<!-- Get XML -->
+									<li class="account <?= ((Request::is('admin/get-xml') OR Request::is('admin/get-xml/*')) ? ' active' : ''); ?>">
+										<a href="<?= url('admin/get-xml'); ?>">
+										Get XML
+										</a>
+									</li>
+									<!-- Action Log -->
+									<li class="account <?= ((Request::is('admin/action-log') OR Request::is('admin/action-log/*') or  Request::is('admin/action-log-details/*')) ? ' active' : ''); ?>">
+										<a href="<?= url('admin/action-log'); ?>">
+										Actions Log
+										</a>
+									</li>
+								</ul>
+							</li>
+
+						</ul>
+					</li>
+				<?php endif;
+				?>
+			</ul>
+			<a class="btn_icon" id="btn_profile" href="<?= url('profile'); ?>"></a>
+			
+			<?php
+				$campaignsInBasket = ShoppingCart::countInCart();
+			?>
+			<a class="btn_icon" id="btn_basket" href="<?= url('campaigns/shopping_cart'); ?>" <?= ($campaignsInBasket == 0 ) ? 'style="padding-right:15px;"' : '' ?>>
+				
+				<span class="badge <?= ($campaignsInBasket == 0 ) ? 'hidden' : '' ?>"><?=$campaignsInBasket?></span>
+			</a>
+		</nav>
+	</div>
+</header>

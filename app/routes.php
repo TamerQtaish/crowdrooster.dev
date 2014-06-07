@@ -11,7 +11,16 @@
 |
 */
 
-Route::get('/', function()
-{
-	return View::make('hello');
-});
+/**
+* View Composers, to handle:
+* - Header
+* - News modal
+* - Notifications
+*/
+
+
+Route::any('/', 'HomeController@index');
+Route::any('test', 'HomeController@test');
+
+
+
