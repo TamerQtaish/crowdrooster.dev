@@ -27,6 +27,15 @@ class HomeController extends BaseController {
 	
 	public function test()
 	{
+		
+//		print_r(phpinfo());
+//		die();
+		
+		$user = User::where('id', 1)->get();
+		
+		print_r($user);
+		
+		
 		return $view = View::make('index', array(
 					'title' => Lang::get('home.test.title')
 					))

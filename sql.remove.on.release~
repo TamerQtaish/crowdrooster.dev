@@ -10,7 +10,7 @@ CREATE TABLE users
   `last_ip` varchar(30),
   `last_on` int(12) DEFAULT 0,
   `phone` varchar(30),
-  `remember_token` varchar(30),
+  `reset_token` varchar(30),
   `user_type` tinyint(3) unsigned  DEFAULT 1,
   `t_and_c` tinyint(3) unsigned DEFAULT 0,
   `require_info` tinyint(3) unsigned DEFAULT 0,

@@ -46,23 +46,24 @@ return array(
 
 	'connections' => array(
 
+        /*
 		'sqlite' => array(
 			'driver'   => 'sqlite',
 			'database' => __DIR__.'/../database/production.sqlite',
 			'prefix'   => '',
 		),
-
+        */
 		'mysql' => array(
 			'driver'    => 'mysql',
 			'host'      => 'localhost',
-			'database'  => 'database',
+			'database'  => 'crowdrooster',
 			'username'  => 'root',
-			'password'  => '',
+			'password'  => 't00r',
 			'charset'   => 'utf8',
 			'collation' => 'utf8_unicode_ci',
 			'prefix'    => '',
 		),
-
+        /*
 		'pgsql' => array(
 			'driver'   => 'pgsql',
 			'host'     => 'localhost',
@@ -82,7 +83,7 @@ return array(
 			'password' => '',
 			'prefix'   => '',
 		),
-
+        */
 	),
 
 	/*
