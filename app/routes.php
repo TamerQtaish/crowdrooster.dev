@@ -21,6 +21,30 @@
 
 Route::any('/', 'HomeController@index');
 Route::any('test', 'HomeController@test');
+//Route::any('user/create', 'UserController@create');
+
+// route to show user authentication
+Route::get('user/login', array('uses' => 'HomeController@showLogin'));
+Route::post('user/login', array('uses' => 'HomeController@doLogin'));
+Route::post('user/logout', array('uses' => 'HomeController@doLogout'));
+Route::get('user/logout', array('uses' => 'HomeController@doLogout'));
+
+//restrict dashboard for authenticated users only
+Route::group(array('before' => 'auth'), function()
+{
+  Route::any('user/dashboard', array('uses' => 'HomeController@showDashboard'));
+  Route::get('user/edit_user/{id}', array('uses' => 'HomeController@showEditUser'));
+  Route::post('user/edit_user/{id}', array('uses' => 'HomeController@doSaveUser'));
+
+	//restrict these controllers for admin access only
+	Route::group(array('before' => 'user_type'), function() 
+	{
+		Route::any('user/view_all_users', array('uses' => 'HomeController@showViewAllUsers'));
+		Route::any('user/new_user', array('uses' => 'HomeController@showNewUser'));
+	});  
+  
+});
+
 
 
 

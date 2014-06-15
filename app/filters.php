@@ -78,3 +78,12 @@ Route::filter('csrf', function()
 		throw new Illuminate\Session\TokenMismatchException;
 	}
 });
+
+//filter for admin user access
+Route::filter('user_type', function()
+{ 
+  if ( Auth::user()->user_type != 2) 
+  {
+     return Redirect::to('user/dashboard'); 
+  }
+}); 

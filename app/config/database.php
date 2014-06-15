@@ -58,7 +58,7 @@ return array(
 			'host'      => 'localhost',
 			'database'  => 'crowdrooster',
 			'username'  => 'root',
-			'password'  => 't00r',
+			'password'  => '',
 			'charset'   => 'utf8',
 			'collation' => 'utf8_unicode_ci',
 			'prefix'    => '',
