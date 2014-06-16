@@ -125,7 +125,6 @@ class HomeController extends BaseController {
 		{		
 			//if user is not admin, then check if they are editing their own details
 			$current_user = Auth::user();
-			die(2);
 			
 			//is user admin or is user editing their own details
 			if ( $current_user->user_type == 2 || $user->id == $current_user->id )
