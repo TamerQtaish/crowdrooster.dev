@@ -18,7 +18,7 @@ class HomeController extends BaseController {
 	public function index()
 	{
 	
-		return $view = View::make('index', array(
+		$view = View::make('index', array(
 					'title' => Lang::get('home.index.title')
 					))
 			->nest('viewBody', 'home.index', array());
@@ -37,7 +37,7 @@ class HomeController extends BaseController {
 		print_r($user);
 		
 		
-		return $view = View::make('index', array(
+		$view = View::make('index', array(
 					'title' => Lang::get('home.test.title')
 					))
 			->nest('viewBody', 'home.test', array());
@@ -48,7 +48,13 @@ class HomeController extends BaseController {
 	public function showLogin()
 	{
 		// show the form
-		return View::make('users.login');
+		$view = View::make('index', array(
+					'title' => Lang::get('home.test.title')
+					))
+			->nest('viewBody', 'users.login', array());	
+			
+		return $view;
+		
 	}
 
 	public function doLogin()
@@ -100,7 +106,13 @@ class HomeController extends BaseController {
 	public function showDashboard()
 	{
 		$user = Auth::user();
-		return View::make('users.dashboard', array('user' => $user));
+		
+		$view = View::make('index', array(
+					'title' => Lang::get('home.test.title')
+					))
+			->nest('viewBody', 'users.dashboard', array('user' => $user));	
+			
+		return $view;		
 	}
 	
 	public function showEditUser($id)
@@ -113,6 +125,7 @@ class HomeController extends BaseController {
 		{		
 			//if user is not admin, then check if they are editing their own details
 			$current_user = Auth::user();
+			die(2);
 			
 			//is user admin or is user editing their own details
 			if ( $current_user->user_type == 2 || $user->id == $current_user->id )
@@ -125,12 +138,17 @@ class HomeController extends BaseController {
 		//can user save these changes?
 		if ( $authenticated )
 		{
-			//show view and pass data	
-			return View::make('users.edit_user', array('user' => $user));
+			//show view and pass data				
+			$view = View::make('index', array(
+						'title' => Lang::get('home.test.title')
+						))
+				->nest('viewBody', 'users.login', array());	
+				
+			return $view;			
 		}
 		else //user cannot make changes
 		{
-			Session::flash('error_message', 'User could not be found, or you cannot edit this user!'); 
+			Session::flash('error_message', 'User could not be found, or you do not have privileges to edit this user!'); 
 			return Redirect::to('user/dashboard');
 		};
 		
@@ -138,34 +156,21 @@ class HomeController extends BaseController {
 	
 	public function showViewAllUsers()
 	{
-		//check if user is admin first
+		//(routing should only allow admin users here)
 		
-		$users = User::all();
-        return View::make('users.show_all', array('users' => $users));	
+		$users = User::orderBy('last_name')->get();
+
+		$view = View::make('index', array(
+					'title' => Lang::get('home.test.title')
+					))
+			->nest('viewBody', 'users.show_all', array('users' => $users));	
+			
+		return $view;				
 	}
 	
-	public function doSaveUser($id)
+	//check if user passes validation before saving
+	private function validateUser(&$user)
 	{
-		$authenticated = FALSE;
-		
-		//creating a new user and user is admin?
-		$current_user = Auth::user();
-		if ( $id == 0 && $current_user->user_type == 2 )
-		{
-			//prepare to create new user
-			$authenticated = TRUE;
-			$user = new stdClass();
-		}
-		else //saving an existing user
-		{
-			//check if user exists
-			$user = User::find($id);
-			$authenticated = isset( $user );
-		};
-		
-		if ( $authenticated )
-		{
-			
 			//validate data
 			$credentials = [
 				'email'=>Input::get('email'),
@@ -183,7 +188,14 @@ class HomeController extends BaseController {
 				'phone'=>'max:30',
 				'password'=>'alpha_num|min:6|max:60|confirmed',
 				'password_confirmation'=>'alpha_num|min:6|max:60'
-			];
+			];			
+			
+			//if this a new user, then make password entry obligatory
+			if ( ! isset($user->id) )
+			{
+				$rules['password'] = 'required|alpha_num|min:6|max:60|confirmed';
+				$rules['password_confirmation'] = 'required|alpha_num|min:6|max:60';
+			};
 			
 			//!!! this is not working: it should check if the email already belongs to same user only !!!!
 			//'email' => 'required|email|unique:users,email|max:60',
@@ -202,50 +214,149 @@ class HomeController extends BaseController {
 				{
 					$user->password = Hash::make( Input::get('password') );					
 				};			
-				
-				//save or create user, depending upon it's a new/existing user
-				if ($id == 0)
-				{
-					User::create(array($user));
-				}
-				else
-				{
-					$user->save();		
-				};
+				return NULL;
+			}
+			else //validation failed
+			{
+				return $validator;
+			};			
+	
+	}
+	
+	public function doSaveUser($id)
+	{
+		//check if user exists
+		$user = User::find($id);
+		if ( isset( $user ) )
+		{
+			///validate user data
+			$validator = $this->validateUser( $user );
+			
+			//were any validation errors returned?
+			if ( $validator == NULL)
+			{
+				//no, save user data
+				$user->save();		
 				
 				//redirect user back to dashboard
 				Session::flash('standard_message', "User '".$user->getFullName()."' details were successfully saved!"); 
-				return Redirect::to('user/dashboard');
-
+				return Redirect::to('user/dashboard');			
 			}
 			else //validation failed
 			{
 				return Redirect::back()->withErrors($validator)->withInput();
-			};		
-					
+			};
 		}
 		else //cannot find user
 		{
 			Session::flash('error_message', 'User could not be found!');
-			return Redirect::to('user/dashboard');
+			return Redirect::to('user/dashboard');		
 		};
 		
 	}
 	
-	public function showNewUser()
+	//soft delete user or un-delete user, depending upon current deleted state of user
+	public function doDeleteUser($id)
 	{
+		//(routing should only allow admin users here, but leave checking code here in case rules change)
+		
 		$user = Auth::user();
 		
 		//is user admin 
 		if ( $user->user_type == 2 )
 		{
-			//show view and pass data	
-			return View::make('users.edit_user', array('user' => $this->createBlankUser() ));
+			//check if user exists
+			$user = User::find($id);
+			
+			if ( isset( $user ) )
+			{	
+				//set deleted state to opposite of what it is
+				$user->soft_deleted = ! $user->soft_deleted;
+				$user->save();
+				
+				//redirect user back to dashboard
+				if ( $user->soft_deleted )
+				{
+					Session::flash('standard_message', "User '".$user->getFullName()."' details was successfully soft deleted!"); 				
+				}
+				else
+				{
+					Session::flash('standard_message', "User '".$user->getFullName()."' details was successfully restored!"); 				
+				};					
+				return Redirect::to('user/dashboard');					
+			}
+			else //cannot find user
+			{
+				Session::flash('error_message', 'User could not be found!');
+				return Redirect::to('user/dashboard');				
+			};
+		}
+		else //user has no access
+		{
+			Session::flash('error_message', 'You do not have privileges to delete a user.'); 
+			return Redirect::to('user/dashboard');
+		};		
+	}
+
+	
+	
+	public function showNewUser()
+	{
+		//(routing should only allow admin users here, but leave checking code here in case rules change)
+	
+		$user = Auth::user();
+		
+		//is user admin 
+		if ( $user->user_type == 2 )
+		{
+			//show view and pass data				
+			$view = View::make('index', array(
+						'title' => Lang::get('home.test.title')
+						))
+				->nest('viewBody', 'users.edit_user', array('user' => $this->createBlankUser() ));	
+				
+			return $view;				
 		}
 		else //user has no access
 		{
 			Session::flash('error_message', 'You do not have privileges to create a new user.'); 
 			return Redirect::to('user/dashboard');
+		};
+	}
+	
+	public function doSaveNewUser()
+	{
+		//(routing should only allow admin users here, but leave checking code here in case rules change)
+		
+ 		//only admin can create a new user
+		$current_user = Auth::user();
+		if ($current_user->user_type == 2 )
+		{
+			//create new user
+			$user = new User;			
+			
+			///validate user data
+			$validator = $this->validateUser( $user );
+			
+ 			//were any validation errors returned?
+			if ( $validator == NULL )
+			{
+				//save user data
+				$user->save();		
+				
+				//redirect user back to dashboard
+				Session::flash('standard_message', "New user '".$user->getFullName()."' details were successfully saved!"); 
+				return Redirect::to('user/dashboard'); 		
+			}
+			else //validation failed
+			{
+				return Redirect::back()->withErrors($validator)->withInput();
+			};	 
+		}	
+		else //user has no access
+		{
+			Session::flash('error_message', 'You do not have privileges to create a new user.'); 
+			return Redirect::to('user/dashboard');		
 		};
 	}
 	

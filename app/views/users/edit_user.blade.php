@@ -5,11 +5,11 @@
 </head>
 <body>
 
-	{{ Form::open(array('url' => 'user/edit_user/'.$user->id, 'method' => 'post')) }}
-	
 		@if($user->id == 0)
+			{{ Form::open(array('url' => 'user/new_user', 'method' => 'post')) }}
 			<h1>New user profile</h1>
 		@else
+			{{ Form::open(array('url' => 'user/edit_user/'.$user->id, 'method' => 'post')) }}
 			<h1>Edit user profile: {{ $user->getFullName() }}.</h1>
 		@endif
 
@@ -50,8 +50,12 @@
 		<p>
 			{{ Form::label('password_confirmation', 'New Password (Verification)') }}*
 			{{ Form::password('password_confirmation') }}
-		</p>		
-		<p>Leave blank if you do not want to change your password.</p>
+		</p>	
+
+		@if($user->id)
+			<p>Leave blank if you do not want to change your password.</p>
+		@endif		
+		
 
 		<p>{{ Form::submit('Save') }}</p>
 	{{ Form::close() }}

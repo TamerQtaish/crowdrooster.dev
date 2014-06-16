@@ -40,7 +40,10 @@ Route::group(array('before' => 'auth'), function()
 	Route::group(array('before' => 'user_type'), function() 
 	{
 		Route::any('user/view_all_users', array('uses' => 'HomeController@showViewAllUsers'));
-		Route::any('user/new_user', array('uses' => 'HomeController@showNewUser'));
+		Route::get('user/new_user', array('uses' => 'HomeController@showNewUser'));
+		Route::post('user/new_user', array('uses' => 'HomeController@doSaveNewUser'));
+		Route::get('user/delete_user/{id}', array('uses' => 'HomeController@doDeleteUser'));
+		Route::get('user/restore_user/{id}', array('uses' => 'HomeController@doDeleteUser'));
 	});  
   
 });

@@ -9,7 +9,7 @@
 	{{-- print_r($user) --}}
 	</pre>
 	
-	<h1>User dashboard for {{ $user->getFullName() }}.</h1>
+	<h1>User dashboard for {{ $user->getUserTypeDesc() }} {{ $user->getFullName() }}.</h1>
 	
 	@if(Session::has('error_message'))
 	<p class="alert"><strong>{{ Session::get('error_message') }}</strong></p>

@@ -80,9 +80,33 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return $this->email;
 	}
 	
-	public function getFullName()
+	public function getFullName($order = 0)
 	{
-		return $this->first_name.' '.$this->last_name;
+		//show full name by forename surname, or surname forename order
+		return ( $order == 0) ? $this->first_name.' '.$this->last_name : $this->last_name.' '.$this->first_name;
 	}
+	
+	public function getDeletedStateDesc()
+	{
+		return ( $this->soft_deleted == TRUE ? 'Deleted' : 'Active');
+	}
+	
+	public function getUserTypeDesc()
+	{
+		switch ($this->user_type)
+		{
+			case 2: //admin user
+				return 'admin user';
+				break;
+				
+			case 0: //standard user
+			case 1:
+			case NULL:
+			default:
+				return 'standard user';
+				break;
+		};
+		
+	}	
 
 }
