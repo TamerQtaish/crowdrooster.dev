@@ -124,28 +124,29 @@ class HomeController extends BaseController {
 		if ($user)
 		{		
 			//if user is not admin, then check if they are editing their own details
-			$current_user = Auth::user();
+			$current_user = Auth::user();		
 			
 			//is user admin or is user editing their own details
 			if ( $current_user->user_type == 2 || $user->id == $current_user->id )
 			{
 				$authenticated = TRUE;
-			};
+			};			
 		
 		};
 		
-		//can user save these changes?
+		//can current user edit this user?
 		if ( $authenticated )
 		{
 			//show view and pass data				
 			$view = View::make('index', array(
 						'title' => Lang::get('home.test.title')
 						))
-				->nest('viewBody', 'users.login', array());	
+				->nest('viewBody', 'users.edit_user', array('user' => $user ));	
+
 				
 			return $view;			
 		}
-		else //user cannot make changes
+		else //user cannot edit this user
 		{
 			Session::flash('error_message', 'User could not be found, or you do not have privileges to edit this user!'); 
 			return Redirect::to('user/dashboard');
