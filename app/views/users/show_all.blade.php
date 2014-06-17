@@ -1,9 +1,4 @@
-<!doctype html>
-<html>
-<head>
-	<title>All Users</title>
-</head>
-<body>
+
 
 	<h1>All active users</h1>
 	<p><a href="{{ URL::to('user/dashboard') }}">Dashboard</a></p>
@@ -21,5 +16,3 @@
 		@endif	
 	@endforeach
 	
-</body>
-</html>

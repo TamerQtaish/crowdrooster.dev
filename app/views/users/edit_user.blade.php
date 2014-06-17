@@ -1,9 +1,4 @@
-<!doctype html>
-<html>
-<head>
-	<title>Edit User</title>
-</head>
-<body>
+
 
 		@if($user->id == 0)
 			{{ Form::open(array('url' => 'user/new_user', 'method' => 'post')) }}
@@ -59,6 +54,3 @@
 
 		<p>{{ Form::submit('Save') }}</p>
 	{{ Form::close() }}
-
-</body>
-</html>

@@ -1,9 +1,4 @@
-<!doctype html>
-<html>
-<head>
-	<title>User Login</title>
-</head>
-<body>
+
 
 	{{ Form::open(array('url' => 'user/login')) }}
 		<h1>Login</h1>
@@ -26,6 +21,3 @@
 
 		<p>{{ Form::submit('Submit!') }}</p>
 	{{ Form::close() }}
-
-</body>
-</html>

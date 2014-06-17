@@ -1,9 +1,4 @@
-<!doctype html>
-<html>
-<head>
-	<title>User Dashboard</title>
-</head>
-<body>
+
 
 	<pre>
 	{{-- print_r($user) --}}
@@ -31,5 +26,3 @@
 	<p><a href="{{ URL::to('user/edit_user/'.$user->id) }}">Edit User</a></p>
 	<p><a href="{{ URL::to('user/logout') }}">Logout</a></p>
 
-</body>
-</html>
